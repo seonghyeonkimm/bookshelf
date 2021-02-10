@@ -1,9 +1,72 @@
-// 🐨 you'll need to import React and ReactDOM up here
+import '@reach/dialog/styles.css';
 
-// 🐨 you'll also need to import the Logo component from './components/logo'
+import Dialog from '@reach/dialog';
+import * as React from "react";
+import ReactDOM from "react-dom";
 
-// 🐨 create an App component here and render the logo, the title ("Bookshelf"), a login button, and a register button.
-// 🐨 for fun, you can add event handlers for both buttons to alert that the button was clicked
+import { Logo } from './components/logo';
 
-// 🐨 use ReactDOM to render the <App /> to the root element
-// 💰 find the root element with: document.getElementById('root')
+function App() {
+  const [openModal, setOpenModal] = React.useState('none');
+
+  const handleLoginSubmit = (formData) => {
+    console.log({ formData });
+  }
+
+  const handleRegisterSubmit = (formData) => {
+    console.log({ formData });
+  }
+
+  return (
+    <div>
+      <Logo title="Bookshelf" />
+      <h1>Bookshelf</h1>
+      <div>
+        <button onClick={() => setOpenModal('login')}>Login</button>
+      </div>
+      <div>
+        <button onClick={() => setOpenModal('register')}>Register</button>
+      </div>
+      <Dialog isOpen={openModal === 'login'} onDismiss={() => setOpenModal('none')}>
+        <div>
+          <button type="button" onClick={() => setOpenModal('none')}>close</button>
+        </div>
+        <h3>Login</h3>
+        <LoginForm onSubmit={handleLoginSubmit} buttonText="Login" />
+      </Dialog>
+      <Dialog isOpen={openModal === 'register'} onDismiss={() => setOpenModal('none')}>
+        <div>
+          <button type="button" onClick={() => setOpenModal('none')}>close</button>
+        </div>
+        <h3>Register</h3>
+        <LoginForm onSubmit={handleRegisterSubmit} buttonText="Register" />
+      </Dialog>
+    </div>
+  );
+}
+
+function LoginForm({ onSubmit, buttonText }) {
+  const handleSubmit = (e)  => {
+    e.preventDefault();
+    const { username, password } = e.target.elements;
+
+    onSubmit({
+      username: username.value,
+      password: password.value,
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Username: <input type="text" name="username" /></label>
+      </div>
+      <div>
+        <label>Password: <input type="password" name="password" /></label>
+      </div>
+      <button type="submit">{buttonText}</button>
+    </form>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
